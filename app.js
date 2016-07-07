@@ -5,9 +5,13 @@ $( document ).ready(function() {
   var currentSeconds = 0;
   var timer;
   var timerStarted = false;
-  
-  $('#mainTimer').html(minutes + ':' + '00');
-  
+  //When page loads reset timer to default time;
+  reset();
+
+  $('#reset').on('click', function() {
+    reset();
+  });
+
   $('#mainTimer').on('click', function() {
     if (!timerStarted) {
       console.log("timer started");
@@ -20,6 +24,7 @@ $( document ).ready(function() {
     }
 
   });
+
   
   function decrement() {
     currentMinutes = Math.floor(seconds / 60);
@@ -40,6 +45,16 @@ $( document ).ready(function() {
     if(seconds === 0) {
       console.log('timez up!');
     }
+  }
+
+  //reset timer
+  function reset() {
+    console.log("timer reset")
+    $('#mainTimer').html(minutes + ':' + "00");
+    clearTimeout(timer);
+    minutes = 1;
+    seconds = minutes * 60;
+    timerStarted = false;
   }
   
 
