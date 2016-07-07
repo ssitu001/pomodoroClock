@@ -3,11 +3,22 @@ $( document ).ready(function() {
   var seconds = minutes * 60;
   var currentMinutes = 0;
   var currentSeconds = 0;
+  var timer;
+  var timerStarted = false;
   
   $('#mainTimer').html(minutes + ':' + '00');
   
   $('#mainTimer').on('click', function() {
-     setTimeout(decrement, 1000);
+    if (!timerStarted) {
+      console.log("timer started");
+      decrement();  
+      timerStarted = !timerStarted;    
+    } else {
+      console.log("stop");
+      clearTimeout(timer);
+      timerStarted = !timerStarted;
+    }
+
   });
   
   function decrement() {
@@ -23,7 +34,7 @@ $( document ).ready(function() {
     $('#mainTimer').html(currentMinutes + ':' + currentSeconds);
     
     if(seconds !== -1) {
-      setTimeout(decrement, 1000);
+      timer = setTimeout(decrement, 1000);
     } 
     
     if(seconds === 0) {
