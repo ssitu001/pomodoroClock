@@ -62,7 +62,7 @@ $( document ).ready(function() {
     
     seconds--;
     
-    $('#mainTimer').html('<h1>'+currentMinutes + ':' + currentSeconds+'</h1>');
+    $('#mainTimer').html('<div><h4>Get To Work!!</h4></div><h1>'+currentMinutes + ':' + currentSeconds+'</h1>');
     
     if(seconds !== -1) {
       timer = setTimeout(decrement, 1000);
@@ -83,7 +83,9 @@ $( document ).ready(function() {
     minutes = defaultMin;
     seconds = minutes * 60;
     clearTimeout(timer);
-    $('#mainTimer').html('<h1>'+minutes + ':' + '00</h1>');
+    $('#mainTimer').html('<div><h4>Time</h4></div><h1>'+minutes + ':' + '00</h1>');
+    $('#breakTimer').html('<div><h4>Break Time</h4></div><h1>'+breakMins + ':' + '00</h1>');
+    $('#workTimer').html('<div><h4>Work Time</h4></div><h1>'+minutes + ':' + '00</h1>');
   }
 
   //user can increment/decrement
