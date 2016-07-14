@@ -1,40 +1,49 @@
 $( document ).ready(function() {
-  var defaultMin = 25;
-  var breakMins = 5;
+  var defaultMin = 1;
+  var breakMins = 1;
   var userMinutes;
-  // var minutes = defaultMin;
+  var userBreak = breakMins * 60;
+  var seconds = defaultMin;
   var defaultSeconds = defaultMin * 60;
   var breakSeconds = breakMins * 60;
   var currentMinutes = 0;
   var currentSeconds = 0;
   var timer;
   var timerStarted = false;
-
   var isBreak = false;
+  var timerType = "work";
   //When page loads reset timer to default time;
   reset();
 
   $('#test').on('click', function () {
-    console.log("testing");
-    $('#mainTimer').empty();
-    $('#mainTimer').html('<h1>'+breakMins + ' mins</h1>');
-    decrement();
+    startBreak()
   }); 
-
+  //main timer add
   $('#add').on('click', function() {
     console.log("user incremented");
     clearTimeout(timer);
     timerStarted = false;
-    userMinutes = defaultMin++;
+    userMinutes = ++defaultMin;
+    userInput(defaultMin);
+  });
+  //main timer subtract
+  $('#subtract').on('click', function() {
+    clearTimeout(timer);
+    timerStarted = false;
+    userMinutes = --defaultMin;
     userInput(defaultMin);
   });
 
-  $('#subtract').on('click', function() {
-    console.log("user decremented");
-    clearTimeout(timer);
-    timerStarted = false;
-    userMinutes = defaultMin--;
-    userInput(defaultMin);
+  $('#addBreak').on('click', function() {
+    userBreak = ++breakMins;
+    console.log("userBreak", userBreak);
+    breakTime();
+  });
+
+  $('#subtractBreak').on('click', function() {
+    userBreak = --breakMins;
+    console.log("userBreak", userBreak);
+    breakTime();
   });
 
   $('#reset').on('click', function() {
@@ -44,7 +53,7 @@ $( document ).ready(function() {
   $('#mainTimer').on('click', function() {
     if (!timerStarted) {
       console.log("timer started");
-      decrement(work, defaultSeconds);  
+      !isBreak ? decrementWork() : decrementBreak();
       timerStarted = !timerStarted;    
     } else {
       console.log("stop");
@@ -55,32 +64,56 @@ $( document ).ready(function() {
   });
 
   //work Timer
-  function decrement(type, seconds) {
+  function decrementWork() {
     //TODO: determine type of timer and minutes (work or break)
-    currentMinutes = Math.floor(seconds / 60);
-    currentSeconds = seconds % 60;
-    
-    if (currentSeconds <= 9) {
-      currentSeconds = "0" + currentSeconds;
-    }
-    
-    seconds--;
-    
-    $('#mainTimer').html('<div><h4>Get To Work!!</h4></div><h1>'+currentMinutes + ':' + currentSeconds+'</h1>');
-    
-    if(seconds !== -1) {
-      timer = setTimeout(decrement, 1000);
-    } 
-    
-    if(seconds === 0) {
-      isBreak = !isBreak;
-      console.log('timez up!', isBreak);
-      //call break
-    // $('#mainTimer').empty();
-    // $('#mainTimer').html('<h1>'+breakMins + ' mins</h1>');
-    // decrement();
-    }
+      $("#mainTimer").empty();
+      currentMinutes = Math.floor(defaultSeconds / 60);
+      currentSeconds = defaultSeconds % 60;
+     
+      if (currentSeconds <= 9) {
+        currentSeconds = "0" + currentSeconds;
+      }   
+      $('#mainTimer').html('<div><h4>Get To Work!!</h4></div><h1>'+ currentMinutes + ':' + currentSeconds+'</h1>');       
+      defaultSeconds--;
 
+ 
+      
+      if(defaultSeconds !== -1) {
+        timer = setTimeout(decrementWork, 100);
+      } 
+      
+      if(defaultSeconds === 0) {
+        isBreak = true;
+        defaultSeconds = defaultMin * 60;
+        console.log('timez up!', isBreak);
+        decrementBreak();
+      }
+  }
+
+    //break Timer
+  function decrementBreak() {
+
+      $("#mainTimer").empty();
+      currentMinutes = Math.floor(breakSeconds / 60);
+      currentSeconds = breakSeconds % 60;
+     
+      if (currentSeconds <= 9) {
+        currentSeconds = "0" + currentSeconds;
+      }   
+      $('#mainTimer').html('<div><h4>BreakTime!!</h4></div><h1>'+ currentMinutes + ':' + currentSeconds+'</h1>');       
+      breakSeconds--;
+
+ 
+      
+      if(breakSeconds !== -1) {
+        timer = setTimeout(decrementBreak, 100);
+      } 
+      
+      if(breakSeconds === 0) {
+        isBreak = false;
+        breakSeconds = breakMins * 60;
+        decrementWork();
+      }
   }
 
   //reset timer
@@ -89,14 +122,14 @@ $( document ).ready(function() {
     timerStarted = false;
     var minutes = defaultMin;
     var seconds = minutes * 60;
-    var breakminss = breakMins;
+    breakMins = 1;
     clearTimeout(timer);
     $('#mainTimer').html('<div><h4>Tap To Start Time</h4></div><h1>'+minutes + ' mins</h1>');
-    $('#breakTimer').html('<div><h4>Break Time</h4></div><h1>'+breakminss + ' mins</h1>');
+    $('#breakTimer').html('<div><h4>Break Time</h4></div><h1>'+breakMins + ' mins</h1>');
     $('#workTimer').html('<div><h4>Work Time</h4></div><h1>'+minutes + ' mins</h1>');
   }
 
-  //user can increment/decrement
+  //user can increment/decrementWork
   function userInput(min) {
     defaultMin = min;
     defaultSeconds = min * 60;
@@ -106,8 +139,15 @@ $( document ).ready(function() {
   
   //break logic
   function breakTime() {
-    console.log('break time');
-  
+    //$('#breakTimer').empty();
+    $('#breakTimer').html('<div><h4>Break Time</h4></div><h1>'+ userBreak + ' mins</h1>');  
   }
+
+  // function startBreak() {
+  //   console.log('breaktimer started');
+  //   $('#mainTimer').empty();
+  //   defaultSeconds = userBreak;
+  //   decrementWork();
+  // }
   
 });
